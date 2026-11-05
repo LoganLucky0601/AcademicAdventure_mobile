@@ -33,3 +33,10 @@ def poll(scene):
 
 def is_pressed(keyboard, key):
     return keyboard[key] or key in held_keys
+
+
+def audio(cue):
+    if sys.platform == "emscripten":
+        from platform import window
+
+        window.academicAudio(cue)

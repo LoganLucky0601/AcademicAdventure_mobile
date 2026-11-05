@@ -14,3 +14,6 @@ html = html.replace("</body>", (web / "controls.html").read_text(encoding="utf-8
 index.write_text(html, encoding="utf-8")
 for filename in ("mobile.css", "mobile.js"):
     shutil.copyfile(web / filename, output / filename)
+
+sounds = web.parent / "Academic Adventure" / "assets" / "sounds"
+shutil.copytree(sounds, output / "sounds", dirs_exist_ok=True)

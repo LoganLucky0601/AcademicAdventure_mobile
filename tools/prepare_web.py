@@ -3,7 +3,6 @@ import ast
 from pathlib import Path
 import re
 import shutil
-import subprocess
 import symtable
 import sys
 from textwrap import indent
@@ -18,18 +17,14 @@ for directory in ("assets", "scripts"):
 
 web = source.parent / "web"
 shutil.copyfile(web / "mobile_input.py", destination / "mobile_input.py")
-for sound in (destination / "assets").rglob("*.wav"):
-    subprocess.run(
-        ["ffmpeg", "-nostdin", "-loglevel", "error", "-y", "-i", str(sound),
-         "-c:a", "libvorbis", "-q:a", "8", str(sound.with_suffix(".ogg"))],
-        check=True,
-    )
-    sound.unlink()
+# The browser loads these originals separately through HTMLAudioElement.
+shutil.rmtree(destination / "assets" / "sounds")
 
 for script in (destination / "scripts").rglob("*.py"):
     original = script.read_text(encoding="utf-8")
     updated = original.replace("funcionarios/ramon/", "funcionarios/Ramon/")
-    updated = updated.replace('.wav"', '.ogg"').replace(".wav'", ".ogg'")
+    if script.name == "sounds.py":
+        updated = "musica_tocando = False\ntyping_tocando = False\n"
     updated = re.sub(r"teclas\[(pygame\.K_\w+)\]", r"mobile_input.is_pressed(teclas, \1)", updated)
     if "mobile_input.is_pressed" in updated:
         updated = "import mobile_input\n" + updated
@@ -37,7 +32,12 @@ for script in (destination / "scripts").rglob("*.py"):
         script.write_text(updated, encoding="utf-8")
 
 code = (source / "main.py").read_text(encoding="utf-8")
-code = code.replace('assets/sounds/soundtrack.wav', 'assets/sounds/soundtrack.ogg')
+code = code.replace("pygame.mixer.init()\n", "")
+code = code.replace("musica_inicial.play(loops=-1)", 'mobile_input.audio("menu")')
+code = code.replace("musica_inicial.stop()", 'mobile_input.audio("stop-menu")')
+code = code.replace("typing.play()", 'mobile_input.audio("typing")')
+code = re.sub(r"(?m)^ +pygame\.mixer\.music\.(load|set_volume)\(.*\) *[^\n]*\n", "", code)
+code = code.replace("pygame.mixer.music.play(loops=-1)", 'mobile_input.audio("soundtrack")')
 code = re.sub(r"teclas\[(pygame\.K_\w+)\]", r"mobile_input.is_pressed(teclas, \1)", code)
 loop = next(node for node in ast.parse(code).body if isinstance(node, ast.While))
 lines = code.splitlines(keepends=True)

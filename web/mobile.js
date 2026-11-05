@@ -82,3 +82,44 @@ if (document.fullscreenEnabled) {
             document.fullscreenElement ? 'Sair da tela cheia' : 'Tela cheia');
     });
 }
+
+const audioTracks = {
+    menu: new Audio('sounds/menusound.wav'),
+    typing: new Audio('sounds/typing.wav'),
+    soundtrack: new Audio('sounds/soundtrack.wav'),
+};
+audioTracks.menu.loop = true;
+audioTracks.soundtrack.loop = true;
+audioTracks.soundtrack.volume = 0.5;
+const pendingAudio = new Set();
+let menuActive = false;
+
+function playAudio(track) {
+    pendingAudio.delete(track);
+    track.play().catch(error => {
+        if (error.name === 'NotAllowedError') {
+            if (track !== audioTracks.menu || menuActive) pendingAudio.add(track);
+        }
+        else if (error.name !== 'AbortError') console.error('Erro no áudio do jogo', error);
+    });
+}
+
+window.academicAudio = cue => {
+    if (cue === 'stop-menu') {
+        menuActive = false;
+        const menu = audioTracks.menu;
+        pendingAudio.delete(menu);
+        menu.pause();
+        menu.currentTime = 0;
+        return;
+    }
+    if (cue === "menu") menuActive = true;
+    playAudio(audioTracks[cue]);
+};
+
+function retryAudio() {
+    for (const track of [...pendingAudio]) playAudio(track);
+}
+window.addEventListener('click', retryAudio, true);
+window.addEventListener('pointerup', retryAudio, true);
+window.addEventListener('keydown', retryAudio, true);
