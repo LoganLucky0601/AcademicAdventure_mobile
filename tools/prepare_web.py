@@ -21,7 +21,7 @@ shutil.copyfile(web / "mobile_input.py", destination / "mobile_input.py")
 for sound in (destination / "assets").rglob("*.wav"):
     subprocess.run(
         ["ffmpeg", "-nostdin", "-loglevel", "error", "-y", "-i", str(sound),
-         str(sound.with_suffix(".ogg"))],
+         "-c:a", "libvorbis", "-q:a", "8", str(sound.with_suffix(".ogg"))],
         check=True,
     )
     sound.unlink()
@@ -37,6 +37,7 @@ for script in (destination / "scripts").rglob("*.py"):
         script.write_text(updated, encoding="utf-8")
 
 code = (source / "main.py").read_text(encoding="utf-8")
+code = code.replace('assets/sounds/soundtrack.wav', 'assets/sounds/soundtrack.ogg')
 code = re.sub(r"teclas\[(pygame\.K_\w+)\]", r"mobile_input.is_pressed(teclas, \1)", code)
 loop = next(node for node in ast.parse(code).body if isinstance(node, ast.While))
 lines = code.splitlines(keepends=True)

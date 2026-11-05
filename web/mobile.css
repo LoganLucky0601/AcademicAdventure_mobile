@@ -13,12 +13,6 @@ body {
 #mobile-controls, #name-form { display: none; }
 
 @media (any-pointer: coarse) {
-    body:has(#mobile-controls:not([hidden])) #canvas.emscripten {
-        inset: max(8px, env(safe-area-inset-top)) auto auto 50% !important;
-        width: min(100vw, calc((100dvh - 185px) * 16 / 9)) !important;
-        height: min(calc(100vw * 9 / 16), calc(100dvh - 185px)) !important;
-        transform: translateX(-50%);
-    }
     #mobile-controls:not([hidden]) {
         position: fixed;
         z-index: 20;
@@ -36,17 +30,18 @@ body {
         display: grid;
         grid-template: repeat(3, var(--key-size)) / repeat(3, var(--key-size));
         place-items: stretch;
-        border: 2px solid #52619b;
+        border: 1px solid rgb(213 222 255 / 38%);
         border-radius: 50%;
-        background: #161e39;
+        background: rgb(16 20 38 / 28%);
     }
-    .dpad button, .actions button, #name-form button {
+    .dpad button, .actions button, #fullscreen, #name-form button {
         pointer-events: auto;
         touch-action: none;
-        border: 2px solid #788bcc;
-        background: #25335c;
+        border: 1px solid rgb(213 222 255 / 55%);
+        background: rgb(23 31 56 / 62%);
         color: #fff;
-        border-radius: 12px;
+        border-radius: 14px;
+        text-shadow: 0 1px 3px #101426;
         font: bold 14px system-ui, sans-serif;
         min-height: 44px;
     }
@@ -55,9 +50,18 @@ body {
     .dpad [data-key="left"] { grid-area: 2 / 1; }
     .dpad [data-key="right"] { grid-area: 2 / 3; }
     .dpad [data-key="down"] { grid-area: 3 / 2; }
-    .actions { display: grid; gap: 6px; }
+    .actions { display: grid; gap: 4px; }
     .actions button { padding: 0 12px; }
-    .actions [data-key="enter"], #name-form button { background: #42358d; }
+    .actions [data-key="enter"], #name-form button { background: rgb(67 54 143 / 74%); }
+    #fullscreen:not([hidden]) {
+        display: grid;
+        place-items: center;
+        position: fixed;
+        top: max(8px, env(safe-area-inset-top));
+        right: max(8px, env(safe-area-inset-right));
+        width: 44px;
+        font-size: 22px;
+    }
     #mobile-controls [data-pressed] { background: #657ce3; }
     #name-form:not([hidden]) {
         display: flex;
@@ -76,15 +80,10 @@ body {
 }
 
 @media (any-pointer: coarse) and (orientation: landscape) {
-    body:has(#mobile-controls:not([hidden])) #canvas.emscripten {
-        inset: 50% auto auto 50% !important;
-        width: min(calc(100vw - 248px), calc(100dvh * 16 / 9)) !important;
-        height: min(calc((100vw - 248px) * 9 / 16), 100dvh) !important;
-        transform: translate(-50%, -50%);
-    }
     #mobile-controls:not([hidden]) {
-        bottom: 50%;
-        transform: translateY(50%);
+        bottom: max(24dvh, calc(env(safe-area-inset-bottom) + 12px));
+        left: max(calc((100vw - 100dvh * 16 / 9) / 2 + 8px), env(safe-area-inset-left), 8px);
+        right: max(calc((100vw - 100dvh * 16 / 9) / 2 + 8px), env(safe-area-inset-right), 8px);
     }
     .dpad { --key-size: 44px; }
 }

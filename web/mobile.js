@@ -62,3 +62,23 @@ window.academicMobileFrame = scene => {
     submittedName = null;
     return frame;
 };
+
+const fullscreen = document.querySelector('#fullscreen');
+if (document.fullscreenEnabled) {
+    fullscreen.hidden = false;
+    fullscreen.addEventListener('click', async () => {
+        try {
+            if (document.fullscreenElement) {
+                await document.exitFullscreen();
+            } else {
+                await document.documentElement.requestFullscreen();
+            }
+        } catch (error) {
+            console.warn('Tela cheia indisponível', error);
+        }
+    });
+    document.addEventListener('fullscreenchange', () => {
+        fullscreen.setAttribute('aria-label',
+            document.fullscreenElement ? 'Sair da tela cheia' : 'Tela cheia');
+    });
+}
