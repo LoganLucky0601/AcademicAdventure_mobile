@@ -15,11 +15,8 @@ function updateLoading() {
         const percent = Math.floor(runtimeProgress.value / runtimeProgress.max * 100);
         loadingTrack.style.setProperty('--download-progress', percent + '%');
     }
+    loading.toggleAttribute('data-ready', ready);
     loadingStart.hidden = !ready;
-    const message = ready
-        ? 'Tudo pronto para começar.'
-        : downloading ? 'Baixando os recursos do jogo…' : 'Preparando o campus…';
-    if (loadingMessage.textContent !== message) loadingMessage.textContent = message;
 }
 
 const loadingObserver = new MutationObserver(updateLoading);
@@ -27,9 +24,13 @@ loadingObserver.observe(runtimeProgress, {attributes: true});
 loadingObserver.observe(runtimeTransfer, {attributes: true});
 loadingObserver.observe(runtimeMessage, {childList: true, subtree: true, characterData: true});
 loadingStart.addEventListener('click', () => {
-    loadingStart.disabled = true;
+    loadingStart.hidden = true;
+    loadingMessage.setAttribute('data-opening', '');
+    window.academicStartRequested = true;
+    loadingObserver.disconnect();
     loadingMessage.textContent = 'Abrindo o jogo…';
 });
+window.academicStartRequested = false;
 updateLoading();
 
 window.finishAcademicLoading = () => {
