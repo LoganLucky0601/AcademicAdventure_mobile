@@ -1,0 +1,90 @@
+body {
+    background: #101426 !important;
+    color: #fff;
+}
+#canvas.emscripten {
+    position: fixed;
+    inset: 50% auto auto 50% !important;
+    width: min(100vw, calc(100dvh * 16 / 9)) !important;
+    height: min(100dvh, calc(100vw * 9 / 16)) !important;
+    transform: translate(-50%, -50%);
+    touch-action: none;
+}
+#mobile-controls, #name-form { display: none; }
+
+@media (any-pointer: coarse) {
+    body:has(#mobile-controls:not([hidden])) #canvas.emscripten {
+        inset: max(8px, env(safe-area-inset-top)) auto auto 50% !important;
+        width: min(100vw, calc((100dvh - 185px) * 16 / 9)) !important;
+        height: min(calc(100vw * 9 / 16), calc(100dvh - 185px)) !important;
+        transform: translateX(-50%);
+    }
+    #mobile-controls:not([hidden]) {
+        position: fixed;
+        z-index: 20;
+        inset: auto max(12px, env(safe-area-inset-right))
+            max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        pointer-events: none;
+        user-select: none;
+    }
+    .dpad {
+        --key-size: clamp(44px, 12vw, 52px);
+        display: grid;
+        grid-template: repeat(3, var(--key-size)) / repeat(3, var(--key-size));
+        place-items: stretch;
+        border: 2px solid #52619b;
+        border-radius: 50%;
+        background: #161e39;
+    }
+    .dpad button, .actions button, #name-form button {
+        pointer-events: auto;
+        touch-action: none;
+        border: 2px solid #788bcc;
+        background: #25335c;
+        color: #fff;
+        border-radius: 12px;
+        font: bold 14px system-ui, sans-serif;
+        min-height: 44px;
+    }
+    .dpad button { font-size: 22px; }
+    .dpad [data-key="up"] { grid-area: 1 / 2; }
+    .dpad [data-key="left"] { grid-area: 2 / 1; }
+    .dpad [data-key="right"] { grid-area: 2 / 3; }
+    .dpad [data-key="down"] { grid-area: 3 / 2; }
+    .actions { display: grid; gap: 6px; }
+    .actions button { padding: 0 12px; }
+    .actions [data-key="enter"], #name-form button { background: #42358d; }
+    #mobile-controls [data-pressed] { background: #657ce3; }
+    #name-form:not([hidden]) {
+        display: flex;
+        gap: 6px;
+        position: fixed;
+        z-index: 21;
+        top: max(10px, env(safe-area-inset-top));
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(90vw, 340px);
+        background: #161e39;
+        border-radius: 12px;
+        padding: 8px;
+    }
+    #name-form input { min-width: 0; flex: 1; font-size: 16px; }
+}
+
+@media (any-pointer: coarse) and (orientation: landscape) {
+    body:has(#mobile-controls:not([hidden])) #canvas.emscripten {
+        inset: 50% auto auto 50% !important;
+        width: min(calc(100vw - 248px), calc(100dvh * 16 / 9)) !important;
+        height: min(calc((100vw - 248px) * 9 / 16), 100dvh) !important;
+        transform: translate(-50%, -50%);
+    }
+    #mobile-controls:not([hidden]) {
+        bottom: 50%;
+        transform: translateY(50%);
+    }
+    .dpad { --key-size: 44px; }
+}

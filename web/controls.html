@@ -1,0 +1,18 @@
+<div id="mobile-controls" hidden aria-label="Controles do jogo">
+    <div class="dpad" role="group" aria-label="Direcional">
+        <button type="button" data-key="up" aria-label="Cima">▲</button>
+        <button type="button" data-key="left" aria-label="Esquerda">◀</button>
+        <button type="button" data-key="right" aria-label="Direita">▶</button>
+        <button type="button" data-key="down" aria-label="Baixo">▼</button>
+    </div>
+    <div class="actions">
+        <button type="button" data-key="enter">Ação</button>
+        <button type="button" data-key="pause">Pausa</button>
+        <button type="button" data-key="escape">Voltar</button>
+    </div>
+</div>
+<form id="name-form" hidden>
+    <input name="playerName" aria-label="Seu nome" placeholder="Seu nome" required maxlength="30" enterkeyhint="done">
+    <button type="submit">OK</button>
+</form>
+<script src="mobile.js"></script>
