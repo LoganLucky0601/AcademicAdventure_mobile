@@ -48,7 +48,10 @@ form.addEventListener('submit', event => {
 form.addEventListener('keydown', event => event.stopPropagation());
 
 window.academicMobileFrame = scene => {
-    controls.hidden = false;
+    if (controls.hidden) {
+        controls.hidden = false;
+        window.finishAcademicLoading();
+    }
     const naming = scene === 'naming';
     if (form.hidden === naming) {
         form.hidden = !naming;
